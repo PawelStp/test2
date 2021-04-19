@@ -49,7 +49,7 @@ namespace Games.Api
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterApi(Configuration.GetSection("Api"));
-            builder.RegisterCore(Configuration.GetSection("Core"));
+            builder.RegisterCore();
             builder.RegisterInfrastructure(Configuration.GetSection("Infrastructure"));
         }
 

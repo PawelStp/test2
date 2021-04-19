@@ -1,6 +1,6 @@
 ﻿using Games.Api.Authentication;
 using Games.Api.Models.Authentication;
-using Games.Core.Interfaces.Repositories;
+using Games.Core.Interfaces.Repositories.Users;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
