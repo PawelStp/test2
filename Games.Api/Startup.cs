@@ -24,6 +24,10 @@ namespace Games.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthorization(x => x.AddPolicy("Admin", p => p.RequireRole("Admin")));
+            services.AddAuthorization(x => x.AddPolicy("User", p => p.RequireRole("User")));
+            services.AddAuthorization(x => x.AddPolicy("Editor", p => p.RequireRole("Editor")));
+
             services.AddControllers()
                 .AddNewtonsoftJson(x =>
                 {
@@ -49,7 +53,7 @@ namespace Games.Api
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterApi(Configuration.GetSection("Api"));
-            builder.RegisterCore(Configuration.GetSection("Core"));
+            builder.RegisterCore();
             builder.RegisterInfrastructure(Configuration.GetSection("Infrastructure"));
         }
 

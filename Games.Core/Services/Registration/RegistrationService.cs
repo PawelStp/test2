@@ -1,6 +1,7 @@
 ﻿using Games.Core.Entities.Users;
 using Games.Core.Exceptions;
 using Games.Core.Interfaces.Repositories;
+using Games.Core.Interfaces.Repositories.Users;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
