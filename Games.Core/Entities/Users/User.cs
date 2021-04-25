@@ -20,10 +20,9 @@ namespace Games.Core.Entities.Users
             Roles = new List<UserRole>();
         }
 
-        public User(long id, string firstName, string lastName, string password, string username, string email, List<UserRole> roles) : this(firstName, lastName, password, username, email)
+        public User(long id, string firstName, string lastName, string password, string username, string email) : this(firstName, lastName, password, username, email)
         {
             Id = id;
-            _roles = roles;
         }
 
         [Required]
@@ -48,6 +47,9 @@ namespace Games.Core.Entities.Users
             _roles.Add(new UserRole(this.Id, role.Id));
         }
 
+        internal UserRole GetRole(Role role)
+            => _roles.FirstOrDefault(r => r.RoleId == role.Id);
+
         internal void CopyFrom(User user)
         {
             Email = user.Email;
@@ -55,7 +57,6 @@ namespace Games.Core.Entities.Users
             LastName = user.LastName;
             Password = user.Password;
             Username = user.Username;
-            Roles = user.Roles;
         }
     }
 }

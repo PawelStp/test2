@@ -11,7 +11,7 @@ namespace Games.Api.Models.Users
         public string LastName { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public List<UserRole> Roles { get; set; }
+        public List<string> Roles { get; set; }
 
         internal static User Create(Core.Entities.Users.User user)
         {
@@ -24,12 +24,8 @@ namespace Games.Api.Models.Users
                 Username = user.Username,
                 Password = user.Password,
                 Roles = user.Roles
-                    .Select(r => new UserRole
-                    {
-                        Id = r.Id,
-                        RoleId = r.RoleId,
-                        UserId = r.UserId
-                    }).ToList()
+                    .Select(r => r.Role.Name)
+                    .ToList()
             };
         }
     }

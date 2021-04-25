@@ -25,7 +25,7 @@ namespace Games.Infrastructure.Repositories.MsSqlServer.Implementations
 
         protected override IQueryable<User> Queryable()
         {
-            return base.Queryable().Include(x => x.Roles);
+            return base.Queryable().Include(x => x.Roles).ThenInclude(x => x.Role);
         }
 
         public async Task<IList<User>> QueryUsers(QueryUsersParameters parameters, CancellationToken cancellationToken)

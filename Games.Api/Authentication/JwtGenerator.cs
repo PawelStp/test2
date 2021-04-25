@@ -1,7 +1,9 @@
 ﻿using Games.Core.Entities.Users;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -30,6 +32,7 @@ namespace Games.Api.Authentication
                     new Claim("UserId", user.Id.ToString()),
                     new Claim("FirstName", user.FirstName.ToString()),
                     new Claim("LastName", user.LastName.ToString()),
+                    new Claim("Roles", JsonConvert.SerializeObject(user.Roles.Select(r => r.Role.Name).ToList()))
                 }),
                 IssuedAt = DateTimeOffset.UtcNow.UtcDateTime,
                 NotBefore = DateTimeOffset.UtcNow.UtcDateTime,

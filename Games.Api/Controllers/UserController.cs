@@ -44,7 +44,7 @@ namespace Games.Api.Controllers
         public async Task<ActionResult> Delete([FromQuery] int id, CancellationToken cancellationToken)
         {
             await _userManagementService.Delete(id, cancellationToken);
-            return Ok();
+            return NoContent();
         }
 
         [HttpPut]
