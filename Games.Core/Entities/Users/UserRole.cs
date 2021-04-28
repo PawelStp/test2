@@ -12,10 +12,10 @@ namespace Games.Core.Entities.Users
 
         [ForeignKey(nameof(User))]
         public long UserId { get; private set; }
-        public virtual User User { get; set; }
+        public virtual User User { get; private set; }
 
         [ForeignKey(nameof(Role))]
         public long RoleId { get; private set; }
-        public virtual Role Role { get; set; }
+        public virtual Role Role { get; private set; }
     }
 }

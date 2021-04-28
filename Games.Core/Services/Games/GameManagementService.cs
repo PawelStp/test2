@@ -2,6 +2,7 @@
 using Games.Core.Exceptions;
 using Games.Core.Interfaces.Repositories;
 using Games.Core.Interfaces.Repositories.Games;
+using Games.Core.Services.Games;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,8 +46,18 @@ namespace Games.Core.Services
             var game = await _gameRepository.Get(id, cancellationToken);
             if (game == null) throw new ValidationException(Error.NotFound);
 
-
             await _gameRepository.Delete(game, cancellationToken);
+        }
+
+        public async Task RateGame(RateGameParameters parameters, CancellationToken cancellationToken)
+        {
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+
+            var game = await _gameRepository.Get(parameters.GameId, cancellationToken);
+            if(game == null) throw new ValidationException(Error.GameNotExists);
+
+            game.Rate(new Rate(parameters.Comment, parameters.Rate, parameters.UserId, parameters.GameId));
+            await _gameRepository.Update(game, cancellationToken);
         }
     }
 }

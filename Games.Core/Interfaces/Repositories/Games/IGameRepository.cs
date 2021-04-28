@@ -13,5 +13,6 @@ namespace Games.Core.Interfaces.Repositories.Games
         Task<int> CountGames(QueryGamesParameters parameters, CancellationToken cancellationToken);
         Task Delete(Game game, CancellationToken cancellationToken);
         Task Update(Game game, CancellationToken cancellationToken);
+        Task<bool> Exists(long gameId, CancellationToken cancellationToken);
     }
 }

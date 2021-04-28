@@ -1,4 +1,5 @@
 using Autofac;
+using Games.Api.Authentication;
 using Games.Core;
 using Games.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -24,9 +25,7 @@ namespace Games.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthorization(x => x.AddPolicy("Admin", p => p.RequireRole("Admin")));
-            services.AddAuthorization(x => x.AddPolicy("User", p => p.RequireRole("User")));
-            services.AddAuthorization(x => x.AddPolicy("Editor", p => p.RequireRole("Editor")));
+            services.AddApiAuthentication(Configuration.GetSection("Api:Authentication"));
 
             services.AddControllers()
                 .AddNewtonsoftJson(x =>
@@ -45,6 +44,28 @@ namespace Games.Api
             {
                 var name = GetType().Assembly.GetName().Name;
                 x.SwaggerDoc(name, new OpenApiInfo { Title = name });
+
+                x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+                x.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                   {
+                     new OpenApiSecurityScheme
+                     {
+                       Reference = new OpenApiReference
+                       {
+                         Type = ReferenceType.SecurityScheme,
+                         Id = "Bearer"
+                       }
+                      },
+                      new string[] { }
+                    }
+                  });
+
             });
             services.AddSwaggerGenNewtonsoftSupport();
 
@@ -77,6 +98,7 @@ namespace Games.Api
             app.UseRouting();
             app.UseMiddleware<HandleExceptionsMiddleware>();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

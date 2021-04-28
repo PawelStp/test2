@@ -14,8 +14,8 @@ namespace Games.Core.Services.Roles
         private readonly IUserRoleRepository _userRoleRepository;
 
         public RolesManagementService(IUserRepository userRepository
-            , IRoleRepository roleRepository
-            , IUserRoleRepository userRoleRepository)
+            ,IRoleRepository roleRepository
+            ,IUserRoleRepository userRoleRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;

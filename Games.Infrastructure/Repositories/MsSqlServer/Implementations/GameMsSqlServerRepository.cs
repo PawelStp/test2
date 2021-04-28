@@ -28,7 +28,10 @@ namespace Games.Infrastructure.Repositories.MsSqlServer.Implementations
 
         protected override IQueryable<Game> Queryable()
         {
-            return base.Queryable().Include(x => x.Category);
+            return base.Queryable()
+                .Include(x => x.Category)
+                .Include(x => x.Rates)
+                .ThenInclude(x => x.User);
         }
 
         private IQueryable<Game> BuildQuery(QueryGamesParameters parameters)

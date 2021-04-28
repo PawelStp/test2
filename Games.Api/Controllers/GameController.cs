@@ -1,6 +1,9 @@
-﻿using Games.Api.Models.Games;
+﻿using Games.Api.Authentication;
+using Games.Api.Models.Games;
 using Games.Core.Interfaces.Repositories.Games;
+using Games.Core.Interfaces.Repositories.Users;
 using Games.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
@@ -9,16 +12,18 @@ using System.Threading.Tasks;
 namespace Games.Api.Controllers
 {
     [ApiController]
-    [Route("api/games")]
+    [Route("api/games"), Authorize]
     public class GameController : ControllerBase
     {
         private readonly GameManagementService _gameManagementService;
         private readonly IGameRepository _gameRepository;
+        private readonly IUserRepository _userRepository;
 
-        public GameController(GameManagementService gameService, IGameRepository gameRepository)
+        public GameController(GameManagementService gameService, IGameRepository gameRepository, IUserRepository userRepository)
         {
             _gameManagementService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         [HttpGet]
@@ -57,6 +62,13 @@ namespace Games.Api.Controllers
         public async Task<ActionResult> UpdateGame([FromBody] EditGameParameters parameters, CancellationToken cancellationToken)
         {
             await _gameManagementService.Edit(parameters.ToDomainModel(), cancellationToken);
+            return Ok();
+        }
+
+        [HttpPost("{gameId}/rate")]
+        public async Task<ActionResult> RateGame(long gameId, [FromBody] RateGameParameters parameters, CancellationToken cancellationToken)
+        {
+            await _gameManagementService.RateGame(parameters.ToDomainModel(gameId, User.GetUserId()), cancellationToken);
             return Ok();
         }
     }

@@ -18,6 +18,7 @@ namespace Games.Core.Exceptions
     {
         NotFound,
         CategoryNotExists,
+        GameNotExists,
         AlreadyExists,
     }
 }

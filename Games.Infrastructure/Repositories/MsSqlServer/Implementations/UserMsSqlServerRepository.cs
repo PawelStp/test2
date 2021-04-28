@@ -33,7 +33,7 @@ namespace Games.Infrastructure.Repositories.MsSqlServer.Implementations
             return await BuildQuery(parameters)
                  .OrderBy(parameters.OrderBy, parameters.IsDescending)
                  .GetPage(parameters.PageIndex, parameters.Size)
-                 .ToListAsync();
+                 .ToListAsync(cancellationToken);
         }
 
         private IQueryable<User> BuildQuery(QueryUsersParameters parameters)
