@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Games.Core.Entities.Games;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -41,6 +42,8 @@ namespace Games.Core.Entities.Users
             get => _roles.AsReadOnly();
             private set => _roles = value.ToList();
         }
+
+        public virtual ICollection<Rate> Rates { get; set; }
 
         internal void AddRole(Role role)
         {

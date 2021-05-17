@@ -26,9 +26,9 @@ namespace Games.Infrastructure.Repositories.MsSqlServer.Implementations
             return await BuildQuery(parameters).CountAsync();
         }
 
-        protected override IQueryable<Game> Queryable()
+        protected override IQueryable<Game> Queryable(bool AsNotTracking = true)
         {
-            return base.Queryable()
+            return base.Queryable(AsNotTracking)
                 .Include(x => x.Category)
                 .Include(x => x.Rates)
                 .ThenInclude(x => x.User);

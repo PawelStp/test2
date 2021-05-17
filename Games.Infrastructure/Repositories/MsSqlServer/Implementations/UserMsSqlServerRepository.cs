@@ -23,7 +23,7 @@ namespace Games.Infrastructure.Repositories.MsSqlServer.Implementations
             return await Queryable().FirstOrDefaultAsync(x => x.Username == username && x.Password == password, cancellationToken);
         }
 
-        protected override IQueryable<User> Queryable()
+        protected override IQueryable<User> Queryable(bool AsNotTracking = true)
         {
             return base.Queryable().Include(x => x.Roles).ThenInclude(x => x.Role);
         }
