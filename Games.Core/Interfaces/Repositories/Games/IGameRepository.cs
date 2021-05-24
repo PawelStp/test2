@@ -14,5 +14,6 @@ namespace Games.Core.Interfaces.Repositories.Games
         Task Delete(Game game, CancellationToken cancellationToken);
         Task Update(Game game, CancellationToken cancellationToken);
         Task<bool> Exists(long gameId, CancellationToken cancellationToken);
+        Task<IList<Game>> GetAll(CancellationToken cancellationToken);
     }
 }

@@ -71,5 +71,11 @@ namespace Games.Api.Controllers
             await _gameManagementService.RateGame(parameters.ToDomainModel(gameId, User.GetUserId()), cancellationToken);
             return Ok();
         }
+
+        [HttpGet("Suggestions")]
+        public async Task<ActionResult> GetSuggestions(CancellationToken cancellationToken)
+        {
+            return Ok(await _gameManagementService.GetSuggestions(User.GetUserId(), cancellationToken));
+        }
     }
 }

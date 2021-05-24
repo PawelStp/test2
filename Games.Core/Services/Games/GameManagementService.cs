@@ -4,6 +4,8 @@ using Games.Core.Interfaces.Repositories;
 using Games.Core.Interfaces.Repositories.Games;
 using Games.Core.Services.Games;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,11 +15,13 @@ namespace Games.Core.Services
     {
         private readonly IGameRepository _gameRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IRateRepository _rateRepository;
 
-        public GameManagementService(IGameRepository gameRepository, ICategoryRepository categoryRepository)
+        public GameManagementService(IGameRepository gameRepository, ICategoryRepository categoryRepository, IRateRepository rateRepository)
         {
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
+            _rateRepository = rateRepository ?? throw new ArgumentNullException(nameof(rateRepository));
         }
 
         public async Task Add(Game game, CancellationToken cancellationToken)
@@ -58,6 +62,30 @@ namespace Games.Core.Services
 
             game.Rate(new Rate(parameters.Comment, parameters.Rate, parameters.UserId, parameters.GameId));
             await _gameRepository.Update(game, cancellationToken);
+        }
+
+        public async Task<List<SuggestionDto>> GetSuggestions(long userId, CancellationToken cancellationToken)
+        {
+            if (userId == 0) throw new ArgumentException(nameof(userId));
+
+            var suggestedIds = await _rateRepository.GetSuggestedIds(userId);
+            if (suggestedIds == null || !suggestedIds.Any()) return new List<SuggestionDto>();
+
+            var games = await _gameRepository.GetAll(cancellationToken);
+
+            return games.Where(g => suggestedIds.Contains(g.Id))
+                .Select(g => new SuggestionDto
+                {
+                    Id = g.Id,
+                    Title = g.Title
+                })
+                .ToList();
+        }
+
+        public class SuggestionDto
+        {
+            public long Id { get; set; }
+            public string Title { get; set; }
         }
     }
 }

@@ -21,7 +21,6 @@ namespace Games.Api.Controllers
             _jwtGenerator = jwtGenerator ?? throw new ArgumentNullException(nameof(jwtGenerator));
         }
 
-
         [HttpPost]
         public async Task<ActionResult<AuthenticationResult>> Login([FromBody] AuthenticationParameters parameters, CancellationToken cancellationToken)
         {
@@ -31,7 +30,6 @@ namespace Games.Api.Controllers
                 return Unauthorized();
             }
             var token = _jwtGenerator.Generate(user);
-
 
             return Ok(new AuthenticationResult(token));
         }

@@ -1,5 +1,7 @@
 ﻿using Games.Core.Entities;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -35,6 +37,27 @@ namespace Games.Infrastructure.Repositories.MsSqlServer
             var resultExpression = Expression.Call(typeof(Queryable), command, new[] { type, property.PropertyType }, entities.Expression, Expression.Quote(orderByExpresion));
 
             return (IOrderedQueryable<T>)entities.Provider.CreateQuery<T>(resultExpression);
+        }
+
+        public static int Count<TSource>(this IQueryable<TSource> source)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+
+            ICollection<TSource> collectionOfT = source as ICollection<TSource>;
+            if (collectionOfT != null) return collectionOfT.Count;
+
+            ICollection collection = source as ICollection;
+            if (collection != null) return collection.Count;
+
+            int count = 0;
+            using (IEnumerator<TSource> e = source.GetEnumerator())
+            {
+                checked
+                {
+                    while (e.MoveNext()) count++;
+                }
+            }
+            return count;
         }
     }
 }
