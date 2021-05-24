@@ -19,14 +19,14 @@ namespace Games.Infrastructure.Repositories.MsSqlServer
             _dbConext = dbContext;
         }
 
-        protected virtual IQueryable<T> Queryable()
+        protected virtual IQueryable<T> Queryable(bool AsNotTracking = true)
         {
-            return DbSet.AsQueryable().AsNoTracking();
+            return AsNotTracking ? DbSet.AsQueryable().AsNoTracking() : DbSet.AsQueryable();
         }
 
         public async Task<T> Get(long id, CancellationToken cancellationToken)
         {
-            return await Queryable().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            return await Queryable(false).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
         public async Task<IList<T>> GetAll(CancellationToken cancellationToken)
