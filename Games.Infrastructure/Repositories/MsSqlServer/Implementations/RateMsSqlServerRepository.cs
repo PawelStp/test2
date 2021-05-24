@@ -11,7 +11,7 @@ namespace Games.Infrastructure.Repositories.MsSqlServer.Implementations
     {
         public RateMsSqlServerRepository(GamesDbContext dbContext) : base(dbContext) { }
 
-        protected override IQueryable<Rate> Queryable()
+        protected override IQueryable<Rate> Queryable(bool AsNotTracking = true)
         {
             return base.Queryable()
                 .Include(r => r.User)
