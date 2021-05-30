@@ -64,28 +64,17 @@ namespace Games.Core.Services
             await _gameRepository.Update(game, cancellationToken);
         }
 
-        public async Task<List<SuggestionDto>> GetSuggestions(long userId, CancellationToken cancellationToken)
+        public async Task<List<Game>> GetSuggestions(long userId, CancellationToken cancellationToken)
         {
             if (userId == 0) throw new ArgumentException(nameof(userId));
 
             var suggestedIds = await _rateRepository.GetSuggestedIds(userId);
-            if (suggestedIds == null || !suggestedIds.Any()) return new List<SuggestionDto>();
+            if (suggestedIds == null || !suggestedIds.Any()) return new List<Game>();
 
             var games = await _gameRepository.GetAll(cancellationToken);
 
             return games.Where(g => suggestedIds.Contains(g.Id))
-                .Select(g => new SuggestionDto
-                {
-                    Id = g.Id,
-                    Title = g.Title
-                })
                 .ToList();
-        }
-
-        public class SuggestionDto
-        {
-            public long Id { get; set; }
-            public string Title { get; set; }
         }
     }
 }

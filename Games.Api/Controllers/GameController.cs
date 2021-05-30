@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Games.Api.Controllers
 {
     [ApiController]
-    [Route("api/games"), Authorize]
+    [Route("api/games")]
     public class GameController : ControllerBase
     {
         private readonly GameManagementService _gameManagementService;
@@ -25,6 +25,7 @@ namespace Games.Api.Controllers
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
+
 
         [HttpGet]
         public async Task<ActionResult<Game>> Get([FromQuery] long id, CancellationToken cancellationToken)
@@ -44,6 +45,7 @@ namespace Games.Api.Controllers
             return Ok(new GamesPageResult(count, parameters.PageIndex, games));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> AddGame([FromBody] AddGameParameters parameters, CancellationToken cancellationToken)
         {
@@ -51,6 +53,7 @@ namespace Games.Api.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpDelete]
         public async Task<ActionResult> DeleteGame([FromQuery] int id, CancellationToken cancellationToken)
         {
@@ -58,6 +61,7 @@ namespace Games.Api.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<ActionResult> UpdateGame([FromBody] EditGameParameters parameters, CancellationToken cancellationToken)
         {
@@ -65,6 +69,7 @@ namespace Games.Api.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("{gameId}/rate")]
         public async Task<ActionResult> RateGame(long gameId, [FromBody] RateGameParameters parameters, CancellationToken cancellationToken)
         {
@@ -72,6 +77,7 @@ namespace Games.Api.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpGet("Suggestions")]
         public async Task<ActionResult> GetSuggestions(CancellationToken cancellationToken)
         {

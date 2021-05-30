@@ -33,6 +33,7 @@ namespace Games.Api
                     x.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     x.SerializerSettings.Formatting = Formatting.None;
                     x.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 });
 
             services.AddCors(options =>
