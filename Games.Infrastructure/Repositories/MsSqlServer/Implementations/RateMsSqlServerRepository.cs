@@ -24,13 +24,13 @@ namespace Games.Infrastructure.Repositories.MsSqlServer.Implementations
             var userRatesGameIds = await GetUserRatesGameIds(userId);
 
             return await Queryable()
-                .Where(r => r.UserId != userId 
+                .Where(r => r.UserId != userId
                     && !userRatesGameIds.Contains(r.GameId))
                 .GroupBy(r => r.GameId)
                 .Select(r => new
                 {
                     GameId = r.Key,
-                    Count = r.Count()
+                    Count = r.Sum(x => x.Value)
                 })
                 .OrderByDescending(r => r.Count)
                 .Take(5)

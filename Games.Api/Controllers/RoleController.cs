@@ -1,4 +1,5 @@
 ﻿using Games.Core.Services.Roles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
@@ -18,6 +19,7 @@ namespace Games.Api.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> Toggle([FromBody] Models.Roles.ToggleRoleParameters parameters, CancellationToken cancellationToken)
         {
             await _rolesManagementService.ToggleRole(parameters.ToDomainParameters(), cancellationToken);
