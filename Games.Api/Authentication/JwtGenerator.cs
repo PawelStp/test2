@@ -25,15 +25,20 @@ namespace Games.Api.Authentication
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_options.IssuerSigningKey);
             var expires = (DateTimeOffset.UtcNow + _options.TokenExpiration).UtcDateTime;
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var claims = new[]
             {
-                Subject = new ClaimsIdentity(new[]
-                {
                     new Claim("UserId", user.Id.ToString()),
                     new Claim("FirstName", user.FirstName.ToString()),
                     new Claim("LastName", user.LastName.ToString()),
                     new Claim("Roles", JsonConvert.SerializeObject(user.Roles.Select(r => r.Role.Name).ToList()))
-                }),
+            };
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Token");
+
+            claimsIdentity.AddClaims(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Role.Name)));
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = claimsIdentity,
                 IssuedAt = DateTimeOffset.UtcNow.UtcDateTime,
                 NotBefore = DateTimeOffset.UtcNow.UtcDateTime,
                 Expires = expires,

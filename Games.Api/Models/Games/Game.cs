@@ -29,7 +29,7 @@ namespace Games.Api.Models.Games
                 Url = game.Url,
                 Rates = game.Rates.Select(x => new RateComment
                 {
-                    Comment = x.Comment,
+                    Comment = x.Comment ?? " ",
                     Rate = x.Value,
                     User = x.User.Username,
                     Date = x.Date

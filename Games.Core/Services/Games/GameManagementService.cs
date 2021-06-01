@@ -5,7 +5,6 @@ using Games.Core.Interfaces.Repositories.Games;
 using Games.Core.Services.Games;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,7 +57,7 @@ namespace Games.Core.Services
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             var game = await _gameRepository.Get(parameters.GameId, cancellationToken);
-            if(game == null) throw new ValidationException(Error.GameNotExists);
+            if (game == null) throw new ValidationException(Error.GameNotExists);
 
             game.Rate(new Rate(parameters.Comment, parameters.Rate, parameters.UserId, parameters.GameId));
             await _gameRepository.Update(game, cancellationToken);
@@ -67,14 +66,33 @@ namespace Games.Core.Services
         public async Task<List<Game>> GetSuggestions(long userId, CancellationToken cancellationToken)
         {
             if (userId == 0) throw new ArgumentException(nameof(userId));
+            var result = new List<Game>();
+            var categoryIds = await _categoryRepository.GetHighlightByUserId(userId, cancellationToken);
+            if (categoryIds == null || categoryIds.Count == 0) return new List<Game>();
 
-            var suggestedIds = await _rateRepository.GetSuggestedIds(userId);
-            if (suggestedIds == null || !suggestedIds.Any()) return new List<Game>();
+            var primaryCategoryId = categoryIds[0];
+            var size = categoryIds.Count == 3 ? 3 : (categoryIds.Count == 1 ? 5 : 3);
+            var primaryGames = await _gameRepository.GetHighlitedAndNotRatedByUserIdAndCategoryId(primaryCategoryId, userId, size, cancellationToken);
 
-            var games = await _gameRepository.GetAll(cancellationToken);
+            result.AddRange(primaryGames);
 
-            return games.Where(g => suggestedIds.Contains(g.Id))
-                .ToList();
+            if (categoryIds.Count > 1)
+            {
+                var secondaryId = categoryIds[1];
+                size = categoryIds.Count == 3 ? 1 : 2;
+                var secondaryGames = await _gameRepository.GetHighlitedAndNotRatedByUserIdAndCategoryId(secondaryId, userId, size, cancellationToken);
+
+                result.AddRange(secondaryGames);
+            }
+
+            if (categoryIds.Count > 2)
+            {
+                var thirdGames = await _gameRepository.GetHighlitedAndNotRatedByUserIdAndCategoryId(categoryIds[2], userId, 1, cancellationToken);
+
+                result.AddRange(thirdGames);
+            }
+
+            return result;
         }
     }
 }

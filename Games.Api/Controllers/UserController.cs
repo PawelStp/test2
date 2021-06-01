@@ -24,7 +24,6 @@ namespace Games.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize("Admin")]
         public async Task<ActionResult<User>> Get([FromQuery] long id, CancellationToken cancellationToken)
         {
             var user = await _userRepository.Get(id, cancellationToken);
@@ -32,7 +31,7 @@ namespace Games.Api.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize("Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UsersPageResult>> GetUsersPage([FromQuery] GetUsersPageParameters parameters, CancellationToken cancellationToken)
         {
             var domainParameters = parameters.ToDomainParameters();
@@ -44,7 +43,7 @@ namespace Games.Api.Controllers
         }
 
         [HttpDelete]
-        [Authorize("Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Delete([FromQuery] int id, CancellationToken cancellationToken)
         {
             await _userManagementService.Delete(id, cancellationToken);
@@ -52,7 +51,7 @@ namespace Games.Api.Controllers
         }
 
         [HttpPut]
-        [Authorize("Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Put([FromBody] EditUserParameters parameters, CancellationToken cancellationToken)
         {
             await _userManagementService.Edit(parameters.ToDomainModel(), cancellationToken);

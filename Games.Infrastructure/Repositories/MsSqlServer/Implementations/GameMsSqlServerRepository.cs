@@ -42,5 +42,22 @@ namespace Games.Infrastructure.Repositories.MsSqlServer.Implementations
                  .Where(() => !string.IsNullOrWhiteSpace(parameters.Description), x => x.Description.Contains(parameters.Description))
                  .Where(() => !string.IsNullOrWhiteSpace(parameters.Category), x => x.Category.Name.Contains(parameters.Category));
         }
+
+        public async Task<IList<Game>> GetHighlitedAndNotRatedByUserIdAndCategoryId(long categoryId, long userId, int size, CancellationToken cancellationToken)
+        {
+            var games = await Queryable()
+                .Where(x => !x.Rates.Any(y => y.UserId == userId) && x.CategoryId == categoryId)
+                .ToListAsync();
+
+            return games
+                .GroupBy(x => x.Id)
+                .Select(x => new
+                {
+                    game = x.FirstOrDefault(),
+                    rates = x.SelectMany(y => y.Rates).Sum(x => x.Value)
+                }).OrderByDescending(y => y.rates)
+                .Select(x => x.game)
+                .ToList();
+        }
     }
 }

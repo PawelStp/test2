@@ -10,5 +10,7 @@ namespace Games.Core.Interfaces.Repositories
         Task<IList<Category>> GetAll(CancellationToken cancellationToken);
         Task<Category> Get(long categoryId, CancellationToken cancellationToken);
         Task<bool> Exists(long categoryId, CancellationToken cancellationToken);
+
+        Task<IList<long>> GetHighlightByUserId(long userId, CancellationToken cancellationToken);
     }
 }

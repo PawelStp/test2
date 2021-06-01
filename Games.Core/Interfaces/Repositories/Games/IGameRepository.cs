@@ -15,5 +15,7 @@ namespace Games.Core.Interfaces.Repositories.Games
         Task Update(Game game, CancellationToken cancellationToken);
         Task<bool> Exists(long gameId, CancellationToken cancellationToken);
         Task<IList<Game>> GetAll(CancellationToken cancellationToken);
+
+        Task<IList<Game>> GetHighlitedAndNotRatedByUserIdAndCategoryId(long categoryId, long userId, int size, CancellationToken cancellationToken);
     }
 }
